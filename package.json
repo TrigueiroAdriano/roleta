@@ -1,0 +1,28 @@
+{
+  "name": "roleta-api",
+  "version": "1.0.0",
+  "description": "API RESTful para armazenamento e exibição do histórico de resultados de roleta em tempo real",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "scraper": "node src/scraper/roletaScraper.js"
+  },
+  "keywords": [
+    "express",
+    "api",
+    "roleta",
+    "sqlite",
+    "puppeteer",
+    "automation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "puppeteer": "^22.15.0",
+    "sqlite3": "^5.1.7"
+  }
+}

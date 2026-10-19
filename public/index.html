@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel da Roleta Brasileira - Visual Playtech & Estratégias ao Vivo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0b0f17;
+      --card-bg: #141b27;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-indigo: #6366f1;
+      --accent-gold: #f59e0b;
+      --accent-emerald: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      /* Cores Oficiais da Roleta */
+      --roleta-red: #dc2626;
+      --roleta-red-dark: #991b1b;
+      --roleta-black: #1e293b;
+      --roleta-black-dark: #0f172a;
+      --roleta-green: #16a34a;
+      --roleta-green-dark: #15803d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 20% 0%, rgba(99, 102, 241, 0.12), transparent 45%),
+        radial-gradient(circle at 80% 100%, rgba(16, 185, 129, 0.08), transparent 45%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    .container {
+      max-width: 1340px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--accent-gold);
+      padding: 0.25rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Layout em 2 Colunas */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+    }
+
+    .card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+    }
+
+    /* Estilos do Painel de Estratégias (Esquerda) */
+    .signal-box {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signal-box.active-signal {
+      background: linear-gradient(135deg, #064e3b, #022c22);
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    }
+
+    .signal-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 0.6rem;
+    }
+
+    .signal-badge.waiting {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .signal-badge.entry {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      animation: pulseGreen 1.5s infinite alternate;
+    }
+
+    @keyframes pulseGreen {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.03); }
+    }
+
+    .signal-target {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.3rem;
+      line-height: 1.3;
+    }
+
+    .signal-subtext {
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+
+    .signal-neighbors {
+      font-size: 0.76rem;
+      color: var(--accent-gold);
+      margin-top: 0.4rem;
+      font-weight: 600;
+    }
+
+    .signal-protection {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    /* Placar de Assertividade */
+    .scoreboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      background: #090d14;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+
+    .score-val {
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .score-lbl {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* Lista de Estratégias (Cards Selecionáveis) */
+    .strategy-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+
+    .strategy-item {
+      background: #090d14;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.9rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .strategy-item:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .strategy-item.active-strat {
+      border-color: var(--accent-gold) !important;
+      background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.25) !important;
+    }
+
+    .strategy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .strategy-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .strategy-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+      line-height: 1.3;
+    }
+
+    .active-badge-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      display: none;
+    }
+
+    .strategy-item.active-strat .active-badge-tag {
+      display: inline-block;
+    }
+
+    button.btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0.75rem;
+      border-radius: 10px;
+      color: white;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    button.btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    /* Modos de Visualização e Controles de Hover (Direita) */
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .view-switcher, .hover-switcher {
+      display: flex;
+      gap: 0.35rem;
+      background: #0b0f17;
+      padding: 0.3rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    .view-switcher { flex: 2; }
+    .hover-switcher { flex: 1.5; }
+
+    .view-btn, .hover-btn {
+      flex: 1;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-top: 0;
+      box-shadow: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .view-btn.active, .hover-btn.active {
+      background: #1e293b;
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Painel de Estatísticas */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      background: #0b0f17;
+      padding: 0.85rem;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: 0.1rem;
+    }
+
+    .stat-value.red { color: #f87171; }
+    .stat-value.black { color: #cbd5e1; }
+    .stat-value.juntos { color: #38bdf8; }
+    .stat-value.separados { color: #c084fc; }
+
+    /* Estilos dos Números / Tiles */
+    .tile {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      border-radius: 8px;
+      user-select: none;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease, filter 0.2s ease, outline 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tile.vermelho {
+      background: linear-gradient(135deg, var(--roleta-red), var(--roleta-red-dark));
+      color: #ffffff;
+      border: 1px solid #ef4444;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 8px rgba(220, 38, 38, 0.4);
+    }
+
+    .tile.preto {
+      background: linear-gradient(135deg, var(--roleta-black), var(--roleta-black-dark));
+      color: #ffffff;
+      border: 1px solid #334155;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 3px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .tile.verde {
+      background: linear-gradient(135deg, var(--roleta-green), var(--roleta-green-dark));
+      color: #ffffff;
+      border: 1px solid #22c55e;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 8px rgba(22, 163, 74, 0.4);
+    }
+
+    /* PINTURA DOS NÚMEROS NO LOBBY CONFORME A ESTRATÉGIA SELECIONADA */
+    /* 1. Modo JUNTOS x SEPARADOS */
+    .paint-mode-juntos .tile.cat-juntos {
+      background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+      border: 2px solid #38bdf8 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5) !important;
+    }
+    .paint-mode-juntos .tile.cat-separados {
+      background: linear-gradient(135deg, #7e22ce, #6b21a8) !important;
+      border: 2px solid #c084fc !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px rgba(192, 132, 252, 0.5) !important;
+    }
+
+    /* 2. Modo CAMUFLADOS (Raiz Digital 1..9) */
+    .paint-mode-camuflados .tile[data-camuflado="1"] { border: 2px solid #ef4444 !important; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+    .paint-mode-camuflados .tile[data-camuflado="2"] { border: 2px solid #f97316 !important; box-shadow: 0 0 8px rgba(249, 115, 22, 0.4); }
+    .paint-mode-camuflados .tile[data-camuflado="3"] { border: 2px solid #f59e0b !important; box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+    .paint-mode-camuflados .tile[data-camuflado="4"] { border: 2px solid #84cc16 !important; box-shadow: 0 0 8px rgba(132, 204, 22, 0.4); }
+    .paint-mode-camuflados .tile[data-camuflado="5"] { border: 2px solid #10b981 !important; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+    .paint-mode-camuflados .tile[data-camuflado="6"] { border: 2px solid #06b6d4 !important; box-shadow: 0 0 8px rgba(6, 182, 212, 0.4); }
+    .paint-mode-camuflados .tile[data-camuflado="7"] { border: 2px solid #3b82f6 !important; box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
+    .paint-mode-camuflados .tile[data-camuflado="8"] { border: 2px solid #8b5cf6 !important; box-shadow: 0 0 8px rgba(139, 92, 246, 0.4); }
+    .paint-mode-camuflados .tile[data-camuflado="9"] { border: 2px solid #ec4899 !important; box-shadow: 0 0 8px rgba(236, 72, 153, 0.4); }
+
+    /* 3. Modo DÚZIAS (1ª, 2ª, 3ª Dúzia) */
+    .paint-mode-duzias .tile.duzia-1 { border: 2px solid #38bdf8 !important; }
+    .paint-mode-duzias .tile.duzia-2 { border: 2px solid #f59e0b !important; }
+    .paint-mode-duzias .tile.duzia-3 { border: 2px solid #ec4899 !important; }
+
+    /* 4. Modo TERMINAIS (0..9) */
+    .paint-mode-terminais .tile {
+      outline: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* 5. Modo ZERO */
+    .paint-mode-zero .tile.verde {
+      transform: scale(1.15) !important;
+      outline: 3px solid #22c55e !important;
+      box-shadow: 0 0 16px #22c55e !important;
+    }
+
+    /* Tag overlay dentro do Tile */
+    .tile-strat-tag {
+      position: absolute;
+      top: 1px;
+      right: 2px;
+      font-size: 0.55rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    /* EFEITO DE HOVER PARA CIRCULAR E DESTACAR NÚMEROS */
+    .highlighting-active .tile {
+      opacity: 0.25;
+      filter: grayscale(40%);
+      transform: scale(0.92);
+    }
+
+    .highlighting-active .tile.highlight-matched {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: scale(1.22) !important;
+      outline: 3px solid #f59e0b !important;
+      outline-offset: 2px !important;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.95), inset 0 0 10px rgba(255, 255, 255, 0.5) !important;
+      z-index: 50 !important;
+      position: relative;
+    }
+
+    /* 1. VISÃO EM GRELHA (Estilo Modal Resultados Playtech) */
+    .grelha-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+      gap: 0.45rem;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      background: #090d14;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .grelha-item {
+      height: 42px;
+      font-size: 1.05rem;
+      border-radius: 6px;
+      position: relative;
+    }
+
+    .grelha-item.recent-first {
+      outline: 2px solid var(--accent-gold);
+      outline-offset: 1px;
+      animation: pulseHighlight 1.5s infinite alternate;
+    }
+
+    @keyframes pulseHighlight {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      100% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+    }
+
+    /* 2. VISÃO FITA HORIZONTAL (Estilo Overlay Live Playtech) */
+    .fita-wrapper {
+      background: #090d14;
+      padding: 1.25rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+    }
+
+    .fita-container {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-width: min-content;
+    }
+
+    .fita-item {
+      width: 44px;
+      height: 44px;
+      font-size: 1.15rem;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* 3. VISÃO EM LISTA DETALHADA */
+    .roulette-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+
+    .row-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #090d14;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    .row-item .badge-col {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .row-item .pos {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      width: 28px;
+    }
+
+    .ball-list {
+      width: 38px;
+      height: 38px;
+      font-size: 1rem;
+      border-radius: 8px;
+    }
+
+    .cor-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 0.1rem;
+    }
+
+    .cor-badge.vermelho { background: rgba(220, 38, 38, 0.2); color: #f87171; }
+    .cor-badge.preto { background: rgba(51, 65, 85, 0.4); color: #cbd5e1; }
+    .cor-badge.verde { background: rgba(22, 163, 74, 0.2); color: #4ade80; }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand-badge">
+        <span>👑 PLAYTECH STYLE & ANÁLISE VISUAL DE ESTRATÉGIAS</span>
+      </div>
+      <h1>🎰 Roleta Brasileira — Painel de Exibição e Sinais</h1>
+      <p class="subtitle">Selecione uma estratégia para pintar e analisar visualmente os números no lobby</p>
+    </header>
+
+    <div class="grid-layout">
+      <!-- ESQUERDA: Painel de Seleção de Estratégias & Emissor de Sinais -->
+      <div class="card">
+        <h2>🎯 Seleção de Estratégia & Sinais</h2>
+
+        <!-- Box de Sinal Recomendado -->
+        <div class="signal-box" id="signalBox">
+          <div class="signal-badge waiting" id="signalBadge">⏳ ANALISANDO HISTÓRICO</div>
+          <div class="signal-target" id="signalTarget">Aguardando Padrão...</div>
+          <div class="signal-subtext" id="signalSubtext">O sistema está monitorando os sorteios recentes da mesa.</div>
+          <div class="signal-neighbors" id="signalNeighbors"></div>
+          <div class="signal-protection">
+            <span>🛡️ Proteção no ZERO (0) ativada</span>
+          </div>
+        </div>
+
+        <!-- Placar de Assertividade -->
+        <div class="scoreboard">
+          <div>
+            <div class="score-val" id="scoreWin" style="color: #4ade80;">14</div>
+            <div class="score-lbl">WIN</div>
+          </div>
+          <div>
+            <div class="score-val" id="scoreLoss" style="color: #f87171;">1</div>
+            <div class="score-lbl">LOSS</div>
+          </div>
+          <div>
+            <div class="score-val" id="scoreRate" style="color: var(--accent-gold);">93%</div>
+            <div class="score-lbl">Assertividade</div>
+          </div>
+        </div>
+
+        <!-- Lista de Seleção de Estratégias (Cards Interativos) -->
+        <div class="strategy-group" id="strategyGroup">
+          <!-- 1. Estratégia JUNTOS x SEPARADOS -->
+          <div class="strategy-item active-strat" data-strategy="juntos">
+            <div class="strategy-header">
+              <span class="strategy-title">🧩 Juntos vs Separados</span>
+              <span class="active-badge-tag">PINTANDO LOBBY</span>
+            </div>
+            <div class="strategy-desc">Pinta números JUNTOS (8-13, 16-21, 26-31) e SEPARADOS (outros) no lobby. Entrada Seca + Zero.</div>
+          </div>
+
+          <!-- 2. Número Camuflado Faltante -->
+          <div class="strategy-item" data-strategy="camuflados">
+            <div class="strategy-header">
+              <span class="strategy-title">🎭 Números Camuflados</span>
+              <span class="active-badge-tag">PINTANDO LOBBY</span>
+            </div>
+            <div class="strategy-desc">Pinta e agrupa números pelas 9 famílias de Raiz Digital (ex: 3, 12, 21, 30).</div>
+          </div>
+
+          <!-- 3. Terminais Finais -->
+          <div class="strategy-item" data-strategy="terminais">
+            <div class="strategy-header">
+              <span class="strategy-title">🔢 Terminais Finais</span>
+              <span class="active-badge-tag">PINTANDO LOBBY</span>
+            </div>
+            <div class="strategy-desc">Destaca dígitos finais (0 a 9) dos números sorteados.</div>
+          </div>
+
+          <!-- 4. Dúzias -->
+          <div class="strategy-item" data-strategy="duzias">
+            <div class="strategy-header">
+              <span class="strategy-title">🎯 Dúzias</span>
+              <span class="active-badge-tag">PINTANDO LOBBY</span>
+            </div>
+            <div class="strategy-desc">Pinta o histórico por 1ª Dúzia (1-12), 2ª Dúzia (13-24) e 3ª Dúzia (25-36).</div>
+          </div>
+
+          <!-- 5. Caçador de Zero -->
+          <div class="strategy-item" data-strategy="zero">
+            <div class="strategy-header">
+              <span class="strategy-title">🟢 Caçador de Zero</span>
+              <span class="active-badge-tag">PINTANDO LOBBY</span>
+            </div>
+            <div class="strategy-desc">Destaca o Zero (0) e analisa atraso de ocorrência.</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btnRecalculate">🔄 Reanalisar Estratégias</button>
+      </div>
+
+      <!-- DIREITA: Histórico e Exibição de Resultados (Playtech Style) -->
+      <div class="card">
+        <h2>📊 Resultados e Histórico ao Vivo</h2>
+
+        <!-- Linha de Controles: Modo de Visão e Modo de Hover -->
+        <div class="controls-row">
+          <div class="view-switcher">
+            <button class="view-btn active" data-view="grelha">
+              <span>🔲 Grelha Playtech</span>
+            </button>
+            <button class="view-btn" data-view="fita">
+              <span>➖ Fita Live</span>
+            </button>
+            <button class="view-btn" data-view="lista">
+              <span>📋 Lista Detalhada</span>
+            </button>
+          </div>
+
+          <div class="hover-switcher">
+            <button class="hover-btn active" data-hovermode="exato" title="Passar o mouse circula somente o número exatamente igual">
+              <span>🎯 Hover: Exato</span>
+            </button>
+            <button class="hover-btn" data-hovermode="camuflado" title="Passar o mouse circula toda a família camuflada do número">
+              <span>🎭 Hover: Camuflados</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Estatísticas -->
+        <div class="stats-bar" id="statsBar">
+          <div class="stat-item">
+            <div class="stat-value red" id="statRed">0%</div>
+            <div class="stat-label">Vermelho</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value black" id="statBlack">0%</div>
+            <div class="stat-label">Preto</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value juntos" id="statJuntos">0%</div>
+            <div class="stat-label">Juntos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value separados" id="statSeparados">0%</div>
+            <div class="stat-label">Separados</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statTotal" style="color: var(--accent-gold);">0</div>
+            <div class="stat-label">Total Sorteios</div>
+          </div>
+        </div>
+
+        <!-- Filtro da Mesa e Botão -->
+        <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+          <input type="text" id="getMesa" value="Roleta Brasileira" style="flex: 1; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid #2a3449; background: #0b0f17; color: #fff;">
+          <button id="btnAtualizar" style="width: auto; padding: 0.75rem 1.25rem; margin-top: 0; background: linear-gradient(135deg, #6366f1, #4f46e5); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer;">Atualizar</button>
+        </div>
+
+        <!-- Container Principal Dinâmico (Com pintura por estratégia) -->
+        <div id="historicoDisplay" class="paint-mode-juntos">
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Carregando histórico...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:3000/api';
+
+    // Sequência Oficial do Cilindro da Roleta Europeia (Sentido Horário)
+    const EUROPEAN_WHEEL_SEQUENCE = [
+      0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
+    ];
+
+    // Definições Oficiais de Números JUNTOS e SEPARADOS
+    const NUMEROS_JUNTOS = [8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21, 26, 27, 28, 29, 30, 31];
+    const NUMEROS_SEPARADOS = [1, 2, 3, 4, 5, 6, 7, 14, 15, 22, 23, 24, 25, 32, 33, 34, 35, 36];
+
+    // Elementos DOM
+    const getMesaInput = document.getElementById('getMesa');
+    const btnAtualizar = document.getElementById('btnAtualizar');
+    const btnRecalculate = document.getElementById('btnRecalculate');
+    const historicoDisplay = document.getElementById('historicoDisplay');
+    const viewButtons = document.querySelectorAll('.view-btn');
+    const hoverButtons = document.querySelectorAll('.hover-btn');
+    const strategyItems = document.querySelectorAll('.strategy-item');
+
+    // Elementos do Box de Sinal e Placar
+    const signalBox = document.getElementById('signalBox');
+    const signalBadge = document.getElementById('signalBadge');
+    const signalTarget = document.getElementById('signalTarget');
+    const signalSubtext = document.getElementById('signalSubtext');
+    const signalNeighbors = document.getElementById('signalNeighbors');
+    
+    const scoreWinEl = document.getElementById('scoreWin');
+    const scoreLossEl = document.getElementById('scoreLoss');
+    const scoreRateEl = document.getElementById('scoreRate');
+
+    let currentViewMode = 'grelha'; // 'grelha' | 'fita' | 'lista'
+    let currentHoverMode = 'exato'; // 'exato' | 'camuflado'
+    let activePaintStrategy = 'juntos'; // 'juntos' | 'camuflados' | 'terminais' | 'duzias' | 'zero'
+    let dadosHistoricoGlobal = [];
+
+    // Estado dos Sinais e Placar de Assertividade
+    let scoreWins = 14;
+    let scoreLosses = 1;
+    let activeSignalState = null;
+
+    // Mapeamento Oficial das Famílias Camufladas (Raiz Digital)
+    const FAMILIAS_CAMUFLADAS = {
+      1: [1, 10, 19, 28],
+      2: [2, 11, 20, 29],
+      3: [3, 12, 21, 30],
+      4: [4, 13, 22, 31],
+      5: [5, 14, 23, 32],
+      6: [6, 15, 24, 33],
+      7: [7, 16, 25, 34],
+      8: [8, 17, 26, 35],
+      9: [9, 18, 27, 36],
+      0: [0]
+    };
+
+    // Identifica se o número pertence ao grupo JUNTOS, SEPARADOS ou ZERO
+    function getCategoriaJuntosSeparados(numero) {
+      const num = parseInt(numero, 10);
+      if (isNaN(num) || num < 0 || num > 36) return 'desconhecido';
+      if (num === 0) return 'zero';
+      return NUMEROS_JUNTOS.includes(num) ? 'juntos' : 'separados';
+    }
+
+    // Função utilitária para obter os vizinhos de cilindro (1 para cada lado na roleta física)
+    function getVizinhosCilindro(numeros, nVizinhos = 1) {
+      const cobertos = new Set();
+      const numList = Array.isArray(numeros) ? numeros : [numeros];
+      const total = EUROPEAN_WHEEL_SEQUENCE.length;
+
+      numList.forEach(numero => {
+        const num = parseInt(numero, 10);
+        if (isNaN(num) || num < 0 || num > 36) return;
+        const idx = EUROPEAN_WHEEL_SEQUENCE.indexOf(num);
+        if (idx !== -1) {
+          cobertos.add(num);
+          for (let i = 1; i <= nVizinhos; i++) {
+            const leftIdx = (idx - i + total) % total;
+            const rightIdx = (idx + i) % total;
+            cobertos.add(EUROPEAN_WHEEL_SEQUENCE[leftIdx]);
+            cobertos.add(EUROPEAN_WHEEL_SEQUENCE[rightIdx]);
+          }
+        }
+      });
+
+      return Array.from(cobertos);
+    }
+
+    // Função utilitária para calcular a Raiz Digital (Número Camuflado 1 a 9, ou 0)
+    function getCamufladoRoot(numero) {
+      const num = parseInt(numero, 10);
+      if (isNaN(num) || num < 0 || num > 36) return -1;
+      if (num === 0) return 0;
+      let sum = num;
+      while (sum > 9) {
+        sum = String(sum).split('').reduce((acc, d) => acc + parseInt(d, 10), 0);
+      }
+      return sum;
+    }
+
+    // Função estrita de cor oficial da roleta europeia
+    function getCorOficialRoleta(numero) {
+      const num = parseInt(numero, 10);
+      if (isNaN(num) || num < 0 || num > 36) return 'desconhecido';
+      if (num === 0) return 'verde';
+      const vermelhos = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+      return vermelhos.includes(num) ? 'vermelho' : 'preto';
+    }
+
+    // Retorna a Dúzia (1, 2 ou 3)
+    function getDuziaRoleta(numero) {
+      const num = parseInt(numero, 10);
+      if (num >= 1 && num <= 12) return 1;
+      if (num >= 13 && num <= 24) return 2;
+      if (num >= 25 && num <= 36) return 3;
+      return 0; // 0 não tem dúzia
+    }
+
+    // Atualiza Placar de WIN / LOSS
+    function atualizarPlacarUI() {
+      scoreWinEl.textContent = scoreWins;
+      scoreLossEl.textContent = scoreLosses;
+      const total = scoreWins + scoreLosses;
+      const rate = total > 0 ? Math.round((scoreWins / total) * 100) : 100;
+      scoreRateEl.textContent = `${rate}%`;
+    }
+
+    // Avalia se o sorteio mais recente foi WIN ou LOSS no Sinal Ativo
+    function avaliarSinalComNovoSorteio(dados) {
+      if (!activeSignalState || !dados || dados.length === 0) return;
+
+      const ultimoSorteio = parseInt(dados[0].numero, 10);
+      const sorteioId = dados[0].horario + '_' + ultimoSorteio;
+
+      if (activeSignalState.lastEvaluatedId === sorteioId) return;
+      activeSignalState.lastEvaluatedId = sorteioId;
+      activeSignalState.attempts++;
+
+      const hit = activeSignalState.coveredNumbers.includes(ultimoSorteio);
+
+      if (hit) {
+        scoreWins++;
+        atualizarPlacarUI();
+        const numSorteadoStr = String(ultimoSorteio).padStart(2, '0');
+        const targetHit = activeSignalState.targets.includes(ultimoSorteio) ? 'Número Seco' : 'Vizinho de Cilindro / Proteção';
+        
+        emitirSinal(
+          '✅ WIN (GREEN DETECTADO!)',
+          `ACERTO NO NÚMERO ${numSorteadoStr}!`,
+          `Sorteado ${numSorteadoStr} (${targetHit}). Reanalisando próximo sinal...`,
+          []
+        );
+
+        activeSignalState = null;
+      } else if (activeSignalState.attempts >= 2) {
+        scoreLosses++;
+        atualizarPlacarUI();
+
+        emitirSinal(
+          '❌ LOSS (SINAL FINALIZADO)',
+          `Sorteio ${String(ultimoSorteio).padStart(2, '0')} fora da cobertura.`,
+          `Reanalisando novos padrões da mesa...`,
+          []
+        );
+
+        activeSignalState = null;
+      }
+    }
+
+    // Algoritmo de Análise de Estratégias e Emissão de Sinal
+    function analisarEstrategias(dados) {
+      if (!dados || dados.length < 3) {
+        signalBox.className = 'signal-box';
+        signalBadge.className = 'signal-badge waiting';
+        signalBadge.textContent = '⏳ HISTÓRICO INSUFICIENTE';
+        signalTarget.textContent = 'Aguardando Sorteios...';
+        signalSubtext.textContent = 'Necessário ao menos 3 números registrados para analisar padrões.';
+        if (signalNeighbors) signalNeighbors.textContent = '';
+        return;
+      }
+
+      avaliarSinalComNovoSorteio(dados);
+      if (activeSignalState) return;
+
+      // 1. ESTRATÉGIA: JUNTOS vs SEPARADOS
+      if (activePaintStrategy === 'juntos') {
+        let countJuntos = 0;
+        let countSeparados = 0;
+
+        for (let i = 0; i < dados.length; i++) {
+          const cat = getCategoriaJuntosSeparados(dados[i].numero);
+          if (i === 0) {
+            if (cat === 'juntos') countJuntos++;
+            else if (cat === 'separados') countSeparados++;
+            else break;
+          } else {
+            if (countJuntos > 0 && cat === 'juntos') countJuntos++;
+            else if (countSeparados > 0 && cat === 'separados') countSeparados++;
+            else break;
+          }
+        }
+
+        if (countJuntos >= 3) {
+          const cobertosTotal = Array.from(new Set([...NUMEROS_SEPARADOS, 0]));
+          activeSignalState = {
+            targets: NUMEROS_SEPARADOS,
+            coveredNumbers: cobertosTotal,
+            attempts: 0,
+            lastEvaluatedId: dados[0].horario + '_' + dados[0].numero
+          };
+
+          emitirSinal(
+            '🧩 JUNTOS x SEPARADOS',
+            'ENTRAR NO GRUPO SEPARADOS (NÚMERO SECO)',
+            `Sequência de ${countJuntos}x números JUNTOS detectada! Apostar no grupo SEPARADOS + Proteção no Zero.`,
+            cobertosTotal
+          );
+          return;
+        }
+
+        if (countSeparados >= 3) {
+          const cobertosTotal = Array.from(new Set([...NUMEROS_JUNTOS, 0]));
+          activeSignalState = {
+            targets: NUMEROS_JUNTOS,
+            coveredNumbers: cobertosTotal,
+            attempts: 0,
+            lastEvaluatedId: dados[0].horario + '_' + dados[0].numero
+          };
+
+          emitirSinal(
+            '🧩 JUNTOS x SEPARADOS',
+            'ENTRAR NO GRUPO JUNTOS (NÚMERO SECO)',
+            `Sequência de ${countSeparados}x números SEPARADOS detectada! Apostar no grupo JUNTOS + Proteção no Zero.`,
+            cobertosTotal
+          );
+          return;
+        }
+      }
+
+      // 2. ESTRATÉGIA: Números Camuflados Faltantes
+      if (activePaintStrategy === 'camuflados') {
+        const windowSize = 15;
+        const janela = dados.slice(0, windowSize);
+
+        for (let root = 1; root <= 9; root++) {
+          const familia = FAMILIAS_CAMUFLADAS[root];
+          const sairam = familia.filter(num => janela.some(d => parseInt(d.numero, 10) === num));
+          const faltam = familia.filter(num => !sairam.includes(num));
+
+          if (sairam.length >= 2 && faltam.length >= 1 && faltam.length <= 2) {
+            const numFaltantesStr = faltam.map(n => String(n).padStart(2, '0')).join(' e ');
+            const numSairamStr = sairam.map(n => String(n).padStart(2, '0')).join(', ');
+            const vizinhosCilindro = getVizinhosCilindro(faltam, 1);
+            const cobertosTotal = Array.from(new Set([...faltam, ...vizinhosCilindro, 0]));
+
+            activeSignalState = {
+              targets: faltam,
+              coveredNumbers: cobertosTotal,
+              attempts: 0,
+              lastEvaluatedId: dados[0].horario + '_' + dados[0].numero
+            };
+
+            emitirSinal(
+              '🎯 CAMUFLADO FALTANTE DETECTADO',
+              `ENTRAR NO(S) NÚMERO(S): ${numFaltantesStr}`,
+              `Janela de 15 rodadas: [ ${numSairamStr} ] da Família ${root} já saíram. Falta [ ${numFaltantesStr} ]!`,
+              cobertosTotal
+            );
+            return;
+          }
+        }
+      }
+
+      // 3. ESTRATÉGIA: Terminais Finais
+      if (activePaintStrategy === 'terminais') {
+        let ausenciasTerminal = { 0: -1, 1: -1, 2: -1, 3: -1, 4: -1, 5: -1, 6: -1, 7: -1, 8: -1, 9: -1 };
+        for (let i = 0; i < dados.length; i++) {
+          const term = Math.abs(parseInt(dados[i].numero, 10)) % 10;
+          if (ausenciasTerminal[term] === -1) ausenciasTerminal[term] = i;
+        }
+
+        let maiorAtrasoTerm = -1;
+        let maiorAtrasoTermVal = -1;
+        for (let term = 0; term <= 9; term++) {
+          const val = ausenciasTerminal[term] === -1 ? dados.length : ausenciasTerminal[term];
+          if (val > maiorAtrasoTermVal) {
+            maiorAtrasoTermVal = val;
+            maiorAtrasoTerm = term;
+          }
+        }
+
+        if (maiorAtrasoTermVal >= 6 && maiorAtrasoTerm !== -1) {
+          const exemplosTerm = [maiorAtrasoTerm, maiorAtrasoTerm + 10, maiorAtrasoTerm + 20, maiorAtrasoTerm + 30].filter(n => n <= 36);
+          const vizinhosCilindro = getVizinhosCilindro(exemplosTerm, 1);
+          const cobertosTotal = Array.from(new Set([...exemplosTerm, ...vizinhosCilindro, 0]));
+
+          activeSignalState = {
+            targets: exemplosTerm,
+            coveredNumbers: cobertosTotal,
+            attempts: 0,
+            lastEvaluatedId: dados[0].horario + '_' + dados[0].numero
+          };
+
+          emitirSinal(
+            '🔢 TERMINAL EM ATRASO',
+            `ENTRAR NO TERMINAL ${maiorAtrasoTerm}`,
+            `Finais em ${maiorAtrasoTerm} (${exemplosTerm.join(', ')}) ausentes há ${maiorAtrasoTermVal} rodadas!`,
+            cobertosTotal
+          );
+          return;
+        }
+      }
+
+      // 4. ESTRATÉGIA: Dúzias em Atraso
+      if (activePaintStrategy === 'duzias') {
+        let ultimaD1 = -1, ultimaD2 = -1, ultimaD3 = -1;
+        for (let i = 0; i < dados.length; i++) {
+          const d = getDuziaRoleta(dados[i].numero);
+          if (d === 1 && ultimaD1 === -1) ultimaD1 = i;
+          if (d === 2 && ultimaD2 === -1) ultimaD2 = i;
+          if (d === 3 && ultimaD3 === -1) ultimaD3 = i;
+        }
+
+        if (ultimaD1 >= 6 || ultimaD1 === -1) {
+          emitirSinal('🎯 OPORTUNIDADE DE DÚZIA', 'ENTRAR NA 1ª DÚZIA (1-12)', `1ª Dúzia sem sair há mais de ${ultimaD1 === -1 ? dados.length : ultimaD1} rodadas!`);
+          return;
+        }
+        if (ultimaD2 >= 6 || ultimaD2 === -1) {
+          emitirSinal('🎯 OPORTUNIDADE DE DÚZIA', 'ENTRAR NA 2ª DÚZIA (13-24)', `2ª Dúzia sem sair há mais de ${ultimaD2 === -1 ? dados.length : ultimaD2} rodadas!`);
+          return;
+        }
+        if (ultimaD3 >= 6 || ultimaD3 === -1) {
+          emitirSinal('🎯 OPORTUNIDADE DE DÚZIA', 'ENTRAR NA 3ª DÚZIA (25-36)', `3ª Dúzia sem sair há mais de ${ultimaD3 === -1 ? dados.length : ultimaD3} rodadas!`);
+          return;
+        }
+      }
+
+      // 5. ESTRATÉGIA: Caçador de Zero
+      if (activePaintStrategy === 'zero') {
+        let roundsSemZero = 0;
+        for (let i = 0; i < dados.length; i++) {
+          if (parseInt(dados[i].numero, 10) === 0) break;
+          roundsSemZero++;
+        }
+        if (roundsSemZero >= 15) {
+          emitirSinal('🟢 CAÇADOR DE ZERO', 'APOSTAR NO ZERO (0)', `Número Zero (0) está ausente há ${roundsSemZero} rodadas!`);
+          return;
+        }
+      }
+
+      // Se nenhuma estratégia disparar
+      signalBox.className = 'signal-box';
+      signalBadge.className = 'signal-badge waiting';
+      signalBadge.textContent = '⏳ MONITORANDO PADRÕES...';
+      signalTarget.textContent = 'Aguardando Confirmação';
+      signalSubtext.textContent = 'Mesa em comportamento padrão. Nenhuma estratégia atingiu o limite de gatilho.';
+      if (signalNeighbors) signalNeighbors.textContent = '';
+    }
+
+    function emitirSinal(badgeText, targetText, subText, cobertos = []) {
+      signalBox.className = 'signal-box active-signal';
+      signalBadge.className = 'signal-badge entry';
+      signalBadge.textContent = badgeText;
+      signalTarget.textContent = targetText;
+      signalSubtext.textContent = subText;
+
+      if (signalNeighbors) {
+        if (cobertos && cobertos.length > 0) {
+          const cobStr = cobertos.sort((a,b)=>a-b).map(n => String(n).padStart(2, '0')).join(', ');
+          signalNeighbors.textContent = `📍 Cobertura de Apostas (Alvos / Vizinhos): [ ${cobStr} ]`;
+        } else {
+          signalNeighbors.textContent = '';
+        }
+      }
+    }
+
+    // Seleção de Estratégias (Pinta o Lobby com a Estratégia Escolhida)
+    strategyItems.forEach(item => {
+      item.addEventListener('click', () => {
+        strategyItems.forEach(s => s.classList.remove('active-strat'));
+        item.classList.add('active-strat');
+        activePaintStrategy = item.dataset.strategy;
+        
+        // Atualiza a classe de pintura no lobby container
+        historicoDisplay.className = `paint-mode-${activePaintStrategy}`;
+
+        activeSignalState = null; // Reseta estado para reanalisar na nova estratégia
+        renderizarPainel(dadosHistoricoGlobal);
+      });
+    });
+
+    // Alternar modos de visualização (Grelha/Fita/Lista)
+    viewButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        viewButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentViewMode = btn.dataset.view;
+        renderizarPainel(dadosHistoricoGlobal);
+      });
+    });
+
+    // Alternar modos de hover (Número Exato / Família Camuflada)
+    hoverButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        hoverButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentHoverMode = btn.dataset.hovermode;
+      });
+    });
+
+    // Calcular estatísticas dos dados (Cores + JUNTOS / SEPARADOS)
+    function atualizarEstatisticas(dados) {
+      if (!dados || dados.length === 0) return;
+      const total = dados.length;
+      let verm = 0, pret = 0, verd = 0, jun = 0, sep = 0;
+
+      dados.forEach(item => {
+        const cor = getCorOficialRoleta(item.numero);
+        const cat = getCategoriaJuntosSeparados(item.numero);
+
+        if (cor === 'vermelho') verm++;
+        else if (cor === 'preto') pret++;
+        else if (cor === 'verde') verd++;
+
+        if (cat === 'juntos') jun++;
+        else if (cat === 'separados') sep++;
+      });
+
+      document.getElementById('statRed').textContent = `${Math.round((verm / total) * 100)}%`;
+      document.getElementById('statBlack').textContent = `${Math.round((pret / total) * 100)}%`;
+      document.getElementById('statJuntos').textContent = `${Math.round((jun / total) * 100)}%`;
+      document.getElementById('statSeparados').textContent = `${Math.round((sep / total) * 100)}%`;
+      document.getElementById('statTotal').textContent = total;
+    }
+
+    // Renderiza a interface decorando cada tile de acordo com a estratégia ativa
+    function renderizarPainel(dados) {
+      if (!dados || dados.length === 0) {
+        historicoDisplay.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 2rem;">Nenhum número registrado para esta mesa ainda.</p>';
+        return;
+      }
+
+      atualizarEstatisticas(dados);
+      analisarEstrategias(dados);
+
+      // 1. VISÃO EM GRELHA (Estilo Modal Resultados Playtech)
+      if (currentViewMode === 'grelha') {
+        const htmlTiles = dados.map((item, idx) => {
+          const cor = getCorOficialRoleta(item.numero);
+          const root = getCamufladoRoot(item.numero);
+          const catJS = getCategoriaJuntosSeparados(item.numero);
+          const duzia = getDuziaRoleta(item.numero);
+          const terminal = Math.abs(parseInt(item.numero, 10)) % 10;
+          const isFirst = idx === 0 ? 'recent-first' : '';
+
+          let tagText = '';
+          if (activePaintStrategy === 'camuflados') tagText = `<span class="tile-strat-tag">C${root}</span>`;
+          else if (activePaintStrategy === 'duzias') tagText = `<span class="tile-strat-tag">${duzia}ªD</span>`;
+          else if (activePaintStrategy === 'terminais') tagText = `<span class="tile-strat-tag">T${terminal}</span>`;
+          else if (activePaintStrategy === 'juntos') tagText = `<span class="tile-strat-tag">${catJS === 'juntos' ? 'JUN' : (catJS === 'separados' ? 'SEP' : '0')}</span>`;
+
+          return `
+            <div class="tile ${cor} cat-${catJS} duzia-${duzia} grelha-item ${isFirst}" data-number="${item.numero}" data-camuflado="${root}" title="Sorteio #${item.posicao || (idx + 1)} - Número ${item.numero} (${catJS.toUpperCase()} - Camuflado ${root} - ${duzia}ª Dúzia)">
+              ${item.numero}
+              ${tagText}
+            </div>
+          `;
+        }).join('');
+
+        historicoDisplay.innerHTML = `<div class="grelha-container">${htmlTiles}</div>`;
+      } 
+      // 2. VISÃO FITA HORIZONTAL (Estilo Overlay Live Playtech)
+      else if (currentViewMode === 'fita') {
+        const htmlFita = dados.map((item, idx) => {
+          const cor = getCorOficialRoleta(item.numero);
+          const root = getCamufladoRoot(item.numero);
+          const catJS = getCategoriaJuntosSeparados(item.numero);
+          const duzia = getDuziaRoleta(item.numero);
+          return `
+            <div class="tile ${cor} cat-${catJS} duzia-${duzia} fita-item" data-number="${item.numero}" data-camuflado="${root}" title="Número ${item.numero} (${catJS.toUpperCase()} - Camuflado ${root})">
+              ${item.numero}
+            </div>
+          `;
+        }).join('');
+
+        historicoDisplay.innerHTML = `
+          <div class="fita-wrapper">
+            <div class="fita-container">${htmlFita}</div>
+          </div>
+        `;
+      } 
+      // 3. VISÃO EM LISTA DETALHADA
+      else {
+        const htmlLista = dados.map((item, idx) => {
+          const cor = getCorOficialRoleta(item.numero);
+          const root = getCamufladoRoot(item.numero);
+          const catJS = getCategoriaJuntosSeparados(item.numero);
+          const timeStr = item.horario || '';
+          const posNum = item.posicao || (idx + 1);
+
+          return `
+            <div class="row-item">
+              <div class="badge-col">
+                <span class="pos">#${posNum}</span>
+                <div class="tile ${cor} cat-${catJS} ball-list" data-number="${item.numero}" data-camuflado="${root}">${item.numero}</div>
+                <div>
+                  <strong style="color: #f8fafc; font-size: 0.95rem;">Número ${item.numero}</strong>
+                  <span style="font-size:0.75rem; color:var(--accent-gold); margin-left:0.4rem;">[${catJS.toUpperCase()}]</span>
+                  <span style="font-size:0.75rem; color:var(--text-muted); margin-left:0.2rem;">(Camuflado ${root})</span>
+                  <div>
+                    <span class="cor-badge ${cor}">${cor}</span>
+                  </div>
+                </div>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">
+                🕒 ${timeStr}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        historicoDisplay.innerHTML = `<div class="roulette-list">${htmlLista}</div>`;
+      }
+    }
+
+    // EVENT DELEGATION PARA HOVER DE NÚMEROS (EXATO OU FAMÍLIA CAMUFLADA)
+    historicoDisplay.addEventListener('mouseover', (e) => {
+      const tile = e.target.closest('[data-number]');
+      if (!tile) return;
+
+      const targetNum = String(tile.dataset.number);
+      const targetCamuflado = String(tile.dataset.camuflado);
+
+      historicoDisplay.classList.add('highlighting-active');
+
+      const allTiles = historicoDisplay.querySelectorAll('[data-number]');
+      allTiles.forEach(t => {
+        let match = false;
+        if (currentHoverMode === 'exato') {
+          match = String(t.dataset.number) === targetNum;
+        } else {
+          match = String(t.dataset.camuflado) === targetCamuflado;
+        }
+
+        if (match) {
+          t.classList.add('highlight-matched');
+        } else {
+          t.classList.remove('highlight-matched');
+        }
+      });
+    });
+
+    historicoDisplay.addEventListener('mouseout', (e) => {
+      const tile = e.target.closest('[data-number]');
+      if (tile) {
+        const related = e.relatedTarget ? e.relatedTarget.closest('[data-number]') : null;
+        if (!related) {
+          historicoDisplay.classList.remove('highlighting-active');
+          const allTiles = historicoDisplay.querySelectorAll('[data-number]');
+          allTiles.forEach(t => t.classList.remove('highlight-matched'));
+        }
+      }
+    });
+
+    // Carregar Histórico via GET /api/historico?mesa=...
+    async function carregarHistorico() {
+      const mesa = getMesaInput.value.trim();
+      if (!mesa) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/historico?mesa=${encodeURIComponent(mesa)}&limite=50`);
+        const json = await res.json();
+
+        if (json.sucesso && Array.isArray(json.dados)) {
+          dadosHistoricoGlobal = json.dados;
+          renderizarPainel(dadosHistoricoGlobal);
+        } else {
+          historicoDisplay.innerHTML = `<p style="color: #f87171;">Erro: ${json.mensagem}</p>`;
+        }
+      } catch (err) {
+        historicoDisplay.innerHTML = '<p style="color: #f87171;">⚠️ Não foi possível se conectar à API. Verifique se o servidor Express está rodando na porta 3000.</p>';
+      }
+    }
+
+    btnAtualizar.addEventListener('click', carregarHistorico);
+    btnRecalculate.addEventListener('click', () => {
+      activeSignalState = null;
+      renderizarPainel(dadosHistoricoGlobal);
+    });
+
+    // Carregar inicial e atualizar a cada 5 segundos
+    carregarHistorico();
+    setInterval(carregarHistorico, 5000);
+  </script>
+</body>
+</html>
